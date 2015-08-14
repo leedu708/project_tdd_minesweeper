@@ -157,19 +157,19 @@ class Board
     output = "MINESWEEPER\n-----------\n#{@flags_remaining} Flags Remaining\n-----------\n"
 
     @board.each_with_index do |row, index|
-      index == 0 ? output << "#{@grid_size - index} | " : output << "#{@grid_size - index}  | "
+      output << "#{index + 1} | "
 
       row.each do |field|
         if field.shown == false && field.flag == false
-          output << "O"
+          output << "O "
         elsif field.shown == false && field.flag == true
-          output << "F"
+          output << "F "
         elsif field.shown == true && field.mine == true && field.flag == true
-          output << "F"
+          output << "F "
         elsif field.shown == true && field.mine == true
-          output << "M"
+          output << "M "
         elsif field.shown == true
-          output << field.sum_mines.to_s
+          output << field.adjacent_mines.to_s + " "
         end
       end
 
@@ -177,8 +177,19 @@ class Board
 
     end
 
-    output << "    ___________\n"
-    output << "    12345678910\n"
+    output << "    "
+
+    @board.each_with_index do |row, index|
+      output << "__"
+    end
+
+    output << "\n    "
+
+    @board.each_with_index do |row, index|
+      output << "#{index + 1} "
+    end
+
+    output << "\n"
     print output
   end
 

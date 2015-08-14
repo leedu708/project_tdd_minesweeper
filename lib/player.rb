@@ -23,7 +23,7 @@ class Player
     input = gets.chomp.split(',').map(&:to_i)
 
     until valid_coordinates(input)
-      put 'Please input valid coordinates.'
+      puts 'Please input valid coordinates.'
       input = gets.chomp.split(',').map(&:to_i)
     end
 
