@@ -1,6 +1,6 @@
-require_relative 'field'
+require_relative "field"
 
-Class Board
+class Board
   attr_reader :flags_remaining, :board, :mine_coords
 
   def initialize(grid_size = 8, input_mines = 10)
@@ -13,7 +13,7 @@ Class Board
 
   end
 
-  def init_board(grid_size, input_mines)
+  def init_board(grid_size = @grid_size, input_mines = @flags_remaining)
     board = []
 
     # set up the board
@@ -34,28 +34,33 @@ Class Board
 
   # sets the fields to contain mines as input by the user
   def create_mines(board, mines)
+
     until mines == 0
       random_field = board.sample.sample
 
       # only sets mine if current field does not already contain a mine
       if random_field.mine
-        continue
+        redo
       else
         random_field.set_mine
         mines -= 1
       end
     end
+
   end
 
   # get a field based on coordinates
   def get_field(coordinates)
+
     @board.flatten.each do |field|
       return field if field.coordinates == coordinates
     end
+
   end
 
   # return the number of adjacent mines
   def sum_mines
+
     @board.flatten.each do |field|
       adjacent_mines = 0
 
@@ -67,6 +72,7 @@ Class Board
 
       field.adjacent_mines = adjacent_mines
     end
+
   end
 
   # adds or removes a flag
@@ -91,13 +97,14 @@ Class Board
     unless field.shown
       field.show_field
 
-      if field.sum_mines == 0
+      if field.adjacent_mines == 0
         field.find_adjacent_fields.each do |xy|
           field = get_field(xy)
-          display_field(field.coordinates) unless field.mine == true
+          show_field(field.coordinates) unless field.mine == true
         end
       end
     end
+
   end
 
   # returns coordinates of all mines
@@ -130,8 +137,7 @@ Class Board
 
   # defines victory condition
   def victory?
-    all_flags = flag_coords
-    @mine_coords.all { |mine| all_flags.include?(mine) }
+    flag_coords.sort == mine_coords.sort
   end
 
   # reveals all fields containing mines
@@ -151,7 +157,7 @@ Class Board
     output = "MINESWEEPER\n-----------\n#{@flags_remaining} Flags Remaining\n-----------\n"
 
     @board.each_with_index do |row, index|
-      index == 0 ? output << "#{@size - index} | " : output << "#{@size - index}  | "
+      index == 0 ? output << "#{@grid_size - index} | " : output << "#{@grid_size - index}  | "
 
       row.each do |field|
         if field.shown == false && field.flag == false
